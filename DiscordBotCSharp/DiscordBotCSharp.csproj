@@ -17,4 +17,6 @@
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00760" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties bin_4debug_4netcoreapp3_11_4config_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>

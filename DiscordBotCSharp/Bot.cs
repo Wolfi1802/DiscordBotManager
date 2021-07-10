@@ -24,9 +24,13 @@ namespace DiscordBotCSharp
         {
             var json = string.Empty;
 
-            using (var fs = File.OpenRead("config.json"))
-            using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
-                json = await sr.ReadToEndAsync().ConfigureAwait(false);
+            using (var fs = File.OpenRead("config.json"))//Your File where you have to place Token and Prefix
+            {
+                using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
+                {
+                    json = await sr.ReadToEndAsync().ConfigureAwait(false);
+                }
+            }
 
             var configJson = JsonConvert.DeserializeObject<configjson>(json);
 
@@ -34,8 +38,7 @@ namespace DiscordBotCSharp
             {
                 Token = configJson.Token,
                 TokenType = TokenType.Bot,
-                AutoReconnect = true,  
-                
+                AutoReconnect = true,              
             };
 
             this.Client = new DiscordClient(config);
@@ -44,10 +47,8 @@ namespace DiscordBotCSharp
 
             this.Client.UseInteractivity(new InteractivityConfiguration
             {
-                Timeout = TimeSpan.FromMinutes(0.25),
-                
+                Timeout = TimeSpan.FromMinutes(0.25),           
             });
-
 
             var commandsConfig = new CommandsNextConfiguration
             {
@@ -77,9 +78,9 @@ namespace DiscordBotCSharp
 
                 discordClient.UpdateStatusAsync(discordStatus);
 
-                Debug.WriteLine("BotPing: " + discordClient.Ping);
-                Debug.WriteLine("Login: " + DateTime.Now.ToString());
-                Debug.WriteLine("Bot Staus set to: " + discordStatus.Name);
+                Debug.WriteLine("BotPing: " + discordClient.Ping);//TODO Logg
+                Debug.WriteLine("Login: " + DateTime.Now.ToString());//TODO Logg
+                Debug.WriteLine("Bot Staus set to: " + discordStatus.Name);//TODO Logg
             }
 
             return Task.CompletedTask;
