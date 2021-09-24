@@ -17,7 +17,7 @@ namespace DiscordBotCSharp
         private const string EMBED_FOOTER = "Made by Wolfi";
         private const string WOLFI_IMAGE = "https://cdn.discordapp.com/avatars/323381699675422724/7dbc89e1519862f09847ffe51b480c6c.png?size=1024";//"https://cdn.discordapp.com/avatars/782960871890354186/39dca5073422e3ace00c9f81c07ccf07.png?size=1024";
         private const string BOT_CREATED_TIME = "03.12.2020 19:22:59";
-        private const string BOT_UPDATE_TIME = "10.07.2021 15:52:55";
+        private const string BOT_UPDATE_TIME = "24.09.2021 18:58:55";
         private const string COMMANDS = ";MyUserInfo\n;Info";
         private const string PATCH_NOTES = "Nüx";
 
