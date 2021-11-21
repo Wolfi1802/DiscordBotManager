@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DiscordBotCSharp.Games.TicTacTo;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
@@ -15,11 +16,11 @@ namespace DiscordBotCSharp
         private const string EVERYONE_TAG = "@everyone";
         private const string WOLFI_BOT_PICUTRE = "https://i.imgur.com/3h5CSAf.png";
         private const string EMBED_FOOTER = "Made by Wolfi";
-        private const string WOLFI_IMAGE = "https://cdn.discordapp.com/avatars/323381699675422724/7dbc89e1519862f09847ffe51b480c6c.png?size=1024";//"https://cdn.discordapp.com/avatars/782960871890354186/39dca5073422e3ace00c9f81c07ccf07.png?size=1024";
+        private const string WOLFI_IMAGE = "https://cdn.discordapp.com/avatars/323381699675422724/865457f5c8253fee583bbb916d827af1.png?size=1024";
         private const string BOT_CREATED_TIME = "03.12.2020 19:22:59";
-        private const string BOT_UPDATE_TIME = "24.09.2021 18:58:55";
-        private const string COMMANDS = ";MyUserInfo\n;Info";
-        private const string PATCH_NOTES = "Nüx";
+        private const string BOT_UPDATE_TIME = "20.11.2021 23:58:55";
+        private const string COMMANDS = ";MyUserInfo\n;Info\n;TTT\nOracle\nAddOracle";
+        private const string PATCH_NOTES = "TicTacTo now aviable type->  ;ttt\nOrakel ausgeben ->Oracle\nOrakel hinzufügen-> AddOracle";
 
         private readonly TimeSpan MaxDaysDeleteMessage = TimeSpan.FromDays(13);
 
@@ -126,6 +127,19 @@ namespace DiscordBotCSharp
             embed.Footer.Text = "WolfiBot Informationen";
 
             await ctx.Channel.SendMessageAsync(embed: embed);
+        }
+
+
+        #endregion
+
+        #region Games
+        [Command("TTT")]
+        [Description("Eröffnet das Klassische Spiel TicTacTo")]
+        private async Task StartTicTacTo(CommandContext ctx)
+        {
+            TicTacToEntry gameStart = new TicTacToEntry(ctx.Member.Id);
+            gameStart.StartGame(ctx);
+
         }
 
         #endregion
