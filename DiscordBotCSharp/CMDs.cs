@@ -1,5 +1,6 @@
 ﻿using DiscordBotCSharp.Games.TicTacTo;
 using DiscordBotCSharp.MessageDesigns;
+using DiscordBotCSharp.ShiningBeyondAnalytic;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -119,6 +120,37 @@ namespace DiscordBotCSharp
                 TextFragments.BOT_DESC);
 
             await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+        }
+
+
+        #endregion 
+
+        #region Shining Beyong 
+        [Command("SbInfo")]
+        [Description("Get all Infos About Sb commands")]
+        public async Task ShowShiningBeyongInfos(CommandContext ctx)
+        {
+            var embed = new DesignFactory().GetEmbed((TextFragments.SB_SHOW, TextFragments.SB_SHOW_DESC, false), TextFragments.SB_TEASER_TITLE,
+                TextFragments.SB_TEASER_DESCRIPTION);
+
+            await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+        }
+
+        [Command("SbHero")]
+        [Description("Get specific hero Datas")]
+        public async Task ShowShiningBeyondHeroInfo(CommandContext ctx, params string[] msg)
+        {
+            try
+            {
+                var shiningBeyondManager = new ShiningBeyondManager();
+
+                shiningBeyondManager.ShowHeroData(ctx, msg);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+
         }
 
 
