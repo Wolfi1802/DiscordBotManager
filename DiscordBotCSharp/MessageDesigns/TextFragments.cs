@@ -16,23 +16,33 @@ namespace DiscordBotCSharp.MessageDesigns
         public const string EMBED_FOOTER = "Made by Wolfi";
         public const string WOLFI_IMAGE = "https://cdn.discordapp.com/avatars/323381699675422724/be60edbf146f24c975d708e05d2030b1.png?size=1024";
         public const string BOT_CREATED_TIME = "03.12.2020 19:22:59";
-        public const string BOT_UPDATE_TIME = "24.01.2022 12:09:55";
-        public const string COMMANDS = ";MyUserInfo\n;Info\n;TTT\n";
+        public const string BOT_UPDATE_TIME = "24.01.2022 13:23:55";
+        public const string COMMANDS = ";myuserinfo\n;info\n;ttt\n;getgit";
         public const string PATCH_NOTES = "Bot Language changed to english";
         public const string PROJECT_LINK = "https://github.com/Wolfi1802/DiscordBotManager";
+        public const string WOLFIS_NAME = "Wolfi";
 
         public const string YOUR_ID = "Your Id on Discord: ";
         public const string PERSONAL_INFOS = "Your Personal informations";
-        public const string SERVER_JOIN = "You Join this Server on";
+        public const string SERVER_JOIN = "You Join this Server on ";
         public const string LIST_COMMANDS = "List of current Commands";
-        public const string CREATED  = "Created";
+        public const string CREATED = "Created";
         public const string NOBODY = "--Nobody--";
         public const string HELPER = "Helper";
         public const string LAST_UPDATE = "Last Update";
         public const string UPDATE_NOTES = "Update Notes";
-        public const string BOT_INFO = "Informationen to Bot";
+        public const string BOT_INFO = "Informations to Bot";
         public const string BOT_DESC = "This Bot is a free open Source Project,type ;help for more informations about commands";
         public const string PROJECT_NAME = "Project Link: ";
+
+        #region SECRET WOLFI TEXT
+        public const string DELETE_ERROR = "Error while delete";
+        public const string AVIABLE_DELETE_MESS = "You can only delete";
+        public const string RIP_DELETE = "Your cant delete Messages older than 13 days.";
+        public const string SUCCESSFUL = "Successful";
+        public const string DELETED = "deleted";
+        public const string MESSAGE = "Messages";
+        #endregion
 
 
     }
