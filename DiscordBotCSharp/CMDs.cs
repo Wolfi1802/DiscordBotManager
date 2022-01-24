@@ -1,8 +1,8 @@
 ﻿using DiscordBotCSharp.Games.TicTacTo;
+using DiscordBotCSharp.MessageDesigns;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using DSharpPlus.Interactivity.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,15 +12,6 @@ namespace DiscordBotCSharp
 {
     public class CMDs : BaseCommandModule
     {
-        private const string DISCORDLIB = "https://docs.stillu.cc/api/Discord.EmbedFieldBuilder.html";
-        private const string EVERYONE_TAG = "@everyone";
-        private const string WOLFI_BOT_PICUTRE = "https://i.imgur.com/3h5CSAf.png";
-        private const string EMBED_FOOTER = "Made by Wolfi";
-        private const string WOLFI_IMAGE = "https://cdn.discordapp.com/avatars/323381699675422724/865457f5c8253fee583bbb916d827af1.png?size=1024";
-        private const string BOT_CREATED_TIME = "03.12.2020 19:22:59";
-        private const string BOT_UPDATE_TIME = "20.11.2021 23:58:55";
-        private const string COMMANDS = ";MyUserInfo\n;Info\n;TTT\nOracle\nAddOracle";
-        private const string PATCH_NOTES = "TicTacTo now aviable type->  ;ttt\nOrakel ausgeben ->Oracle\nOrakel hinzufügen-> AddOracle";
 
         private readonly TimeSpan MaxDaysDeleteMessage = TimeSpan.FromDays(13);
 
@@ -35,6 +26,10 @@ namespace DiscordBotCSharp
         [Description("Secret command from wolfi :P")]
         public async Task DeleteChannelMessages(CommandContext ctx, int amount)
         {
+
+            if (323381699675422724 != ctx.Message.Author.Id)
+                return;
+
             TimeSpan valueOfDays = new TimeSpan();
             List<DiscordMessage> toDeleteMessages;
             bool showError = false;
@@ -56,25 +51,22 @@ namespace DiscordBotCSharp
                                 valueOfDays = DateTime.Now - item.CreationTimestamp.DateTime;
 
                                 if (valueOfDays.Days <= MaxDaysDeleteMessage.Days)
-                                {
                                     toDeleteMessages.Add(item);
-                                    Debug.WriteLine(item.CreationTimestamp.DateTime);
-                                }
                                 else
                                     showError = true;
                             }
 
                             await ctx.Channel.DeleteMessagesAsync(toDeleteMessages);
-                            await ctx.Channel.SendMessageAsync($"Es wurden erfolgreich {toDeleteMessages.Count} gelöscht.").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"Successful {toDeleteMessages.Count} deleted.").ConfigureAwait(false);
 
                             if (showError)
                             {
-                                await ctx.Channel.SendMessageAsync($"Es können keine Nachrichten gelöscht werden, die älter als 13 Tage sind.").ConfigureAwait(false);
+                                await ctx.Channel.SendMessageAsync($"Your cant delete Messages older than 13 days.").ConfigureAwait(false);
                             }
                         }
                         else
                         {
-                            await ctx.Channel.SendMessageAsync($"es können maximal [{messages.Count + 2}] Nachrichten gelöscht werden").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"You can only delete [{messages.Count + 2}] messages").ConfigureAwait(false);
                         }
                     }
                     this.deleteUnderWorking = false;
@@ -91,42 +83,42 @@ namespace DiscordBotCSharp
         }
 
         [Command("UserInfo")]
-        [Description("Stellt die Nutzer Informationen zur Verfügung")]
-        public async Task GiveUserId(CommandContext ctx)
+        [Description("Show your personal Informations")]
+        public async Task GiveUserInformations(CommandContext ctx)
         {
-            string toSendMessage = $"-> {ctx.Member.DisplayName} deine Id lautet {ctx.Member.Id.ToString()}\n";
-            toSendMessage += $"-> Die ID deines avatars lautet {ctx.Member.AvatarUrl}\n";
-            toSendMessage += $"-> Du hast den Server am {ctx.Member.JoinedAt} betreten\n";
+            string toSendMessage = $"{ctx.Member.Mention}{TextFragments.YOUR_ID}{ctx.Member.Id}\n";
+            toSendMessage += $"{TextFragments.SERVER_JOIN}{ctx.Member.JoinedAt.UtcDateTime}\n";
 
+            var embed = new DesignFactory().GetProfileEmbed(ctx, (TextFragments.PERSONAL_INFOS, toSendMessage, false));
 
-            var embed = new DiscordEmbedBuilder { Footer = new DiscordEmbedBuilder.EmbedFooter() };
-            embed.Color = DiscordColor.CornflowerBlue;
-            embed.WithAuthor(name: ctx.Member.DisplayName, url: ctx.Member.AvatarUrl, iconUrl: ctx.Member.AvatarUrl);
-            embed.AddField(name: "Deine Informationen", value: toSendMessage, inline: false);
-            embed.Timestamp = DateTimeOffset.Now;
             await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
         }
 
         [Command("Info")]
-        [Description("Stellt die Bot Informationen zur Verfügung")]
+        [Description("Show all informations about this Bos")]
         private async Task ShowBotInformations(CommandContext ctx)
         {
-            var embed = new DiscordEmbedBuilder { Footer = new DiscordEmbedBuilder.EmbedFooter() };
-            embed.WithAuthor(name: ctx.Member.DisplayName, url: WOLFI_IMAGE, iconUrl: WOLFI_IMAGE);
-            embed.Color = DiscordColor.CornflowerBlue;
-            embed.Title = $"Informationen zum Bot";
-            embed.Description = "Dieser Bot ist eine eigen Entwicklung.\nBitte geben Sie den Command [;help] ein um eine Auflistung und[;help [Comand]] um eine Beschreibung der Commands zu erhalten";
-            embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail { Url = WOLFI_BOT_PICUTRE };
-            embed.AddField(name: "Auflistung der Commands", value: COMMANDS);
-            embed.AddField(name: "Erstellt", value: BOT_CREATED_TIME, inline: true);
-            embed.AddField(name: "Mitwirkende", value: "--Keine--", inline: true);
-            embed.AddField(name: "Letzes Update", value: BOT_UPDATE_TIME, inline: false);
-            embed.AddField(name: "Update Notes", value: PATCH_NOTES, inline: false);
-            embed.Timestamp = DateTimeOffset.Now;
-            embed.Footer.IconUrl = WOLFI_BOT_PICUTRE;
-            embed.Footer.Text = "WolfiBot Informationen";
+            List<(string name, string value, bool inline)> field = new List<(string name, string value, bool inline)>();
+            field.Add((TextFragments.LIST_COMMANDS, TextFragments.COMMANDS, false));
+            field.Add((TextFragments.CREATED, TextFragments.BOT_CREATED_TIME, true));
+            field.Add((TextFragments.HELPER, TextFragments.NOBODY, true));
+            field.Add((TextFragments.LAST_UPDATE, TextFragments.BOT_UPDATE_TIME, false));
+            field.Add((TextFragments.UPDATE_NOTES, TextFragments.PATCH_NOTES, false));
 
-            await ctx.Channel.SendMessageAsync(embed: embed);
+            var embed = new DesignFactory().GetEmbed(TextFragments.BOT_INFO,
+                TextFragments.BOT_DESC, field);
+
+            await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+        }
+
+        [Command("GetGit")]
+        [Description("Get project link")]
+        public async Task GetGitCode(CommandContext ctx)
+        {
+            var embed = new DesignFactory().GetEmbed((TextFragments.PROJECT_NAME, TextFragments.PROJECT_LINK, false), TextFragments.BOT_INFO,
+                TextFragments.BOT_DESC);
+
+            await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
         }
 
 
@@ -134,7 +126,7 @@ namespace DiscordBotCSharp
 
         #region Games
         [Command("TTT")]
-        [Description("Eröffnet das Klassische Spiel TicTacTo")]
+        [Description("Start TicTacTo (only German Language atm)")]
         private async Task StartTicTacTo(CommandContext ctx)
         {
             TicTacToEntry gameStart = new TicTacToEntry(ctx.Member.Id);

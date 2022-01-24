@@ -73,7 +73,7 @@ namespace DiscordBotCSharp
             if (t is DiscordClient discordClient)
             {
                 DiscordActivity discordStatus = new DiscordActivity();
-                discordStatus.Name = "Nutzen Sie ;info";
+                discordStatus.Name = "Type ;info";
                 discordStatus.ActivityType = ActivityType.Playing;
 
                 discordClient.UpdateStatusAsync(discordStatus);
