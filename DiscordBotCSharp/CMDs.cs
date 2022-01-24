@@ -57,16 +57,16 @@ namespace DiscordBotCSharp
                             }
 
                             await ctx.Channel.DeleteMessagesAsync(toDeleteMessages);
-                            await ctx.Channel.SendMessageAsync($"Successful {toDeleteMessages.Count} deleted.").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"{TextFragments.SUCCESSFUL} {toDeleteMessages.Count} {TextFragments.DELETED}").ConfigureAwait(false);
 
                             if (showError)
                             {
-                                await ctx.Channel.SendMessageAsync($"Your cant delete Messages older than 13 days.").ConfigureAwait(false);
+                                await ctx.Channel.SendMessageAsync(TextFragments.RIP_DELETE).ConfigureAwait(false);
                             }
                         }
                         else
                         {
-                            await ctx.Channel.SendMessageAsync($"You can only delete [{messages.Count + 2}] messages").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"{TextFragments.AVIABLE_DELETE_MESS} {messages.Count + 2} {TextFragments.MESSAGE}").ConfigureAwait(false);
                         }
                     }
                     this.deleteUnderWorking = false;
@@ -76,7 +76,7 @@ namespace DiscordBotCSharp
             }
             catch
             {
-                await ctx.Channel.SendMessageAsync("Ein Fehler beim löschen ist aufgetreten.").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(TextFragments.DELETE_ERROR).ConfigureAwait(false);
                 this.deleteUnderWorking = false;
             }
 
