@@ -6,6 +6,8 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
 {
     public class HeroModel
     {
+        public int HeroModelId { set; get; }
+
         public string Name { set; get; }
 
         public int Lvl { set; get; }
@@ -18,6 +20,8 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
 
         public string WeaponSkill { set; get; }
 
-        public HeroAttributes Attributes { set; get; }
+        public int AttributesId { set; get; }
+
+        public virtual HeroAttributes Attributes { set; get; }
     }
 }

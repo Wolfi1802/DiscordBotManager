@@ -6,6 +6,8 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
 {
     public class HeroAttributes
     {
+        public int AttributesId { set; get; }
+
         public int Atk { set; get; }
 
         public int Def { set; get; }
