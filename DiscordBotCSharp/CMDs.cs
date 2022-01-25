@@ -142,15 +142,109 @@ namespace DiscordBotCSharp
         {
             try
             {
-                var shiningBeyondManager = new ShiningBeyondManager();
-
-                shiningBeyondManager.ShowHeroData(ctx, msg);
+                ShiningBeyondManager.Instance.ShowHeroData(ctx, msg);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex);
             }
 
+        }
+
+        [Command("SbAdd")]
+        [Description("Add Hero to DataBase")]
+        public async Task AddHeroToDataBase(CommandContext ctx, params string[] msg)
+        {
+            var embed2 = new DesignFactory().GetEmbed("Not Ready", "Current Command isnt ready!");
+            await ctx.Channel.SendMessageAsync(embed: embed2).ConfigureAwait(false);
+            return;
+
+            try
+            {//TODO add not rdy bcs missin parse!!!
+                DiscordEmbedBuilder embed = null;
+                DiscordEmbedBuilder heroEmbed = null;
+
+                if (ShiningBeyondManager.Instance.AddtoDataBase(this.GetParsedModel(msg)))
+                {
+                    embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_S, TextFragments.SB_DB_ADD_S, setAuthor: false);
+                    //heroEmbed = new DesignFactory().GetShindingBeyondHeroEmbed(ShiningBeyondManager.Instance.GetTESTDATA());
+                }
+                else
+                    embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_E, TextFragments.SB_DB_ADD_E, setAuthor: false);
+
+                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                //await ctx.Channel.SendMessageAsync(embed: heroEmbed).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        [Command("SbRemove")]
+        [Description("Remove Hero From Database")]
+        public async Task RemoveHeroToDataBase(CommandContext ctx, string id)
+        {
+            try
+            {
+                DiscordEmbedBuilder embed = null;
+                DiscordEmbedBuilder heroEmbed = null;
+                HeroModel foundedModel = ShiningBeyondManager.Instance.GetModelBy(int.Parse(id));
+
+                if (foundedModel != null)
+                {
+                    if (ShiningBeyondManager.Instance.RemoveFromDataBase(foundedModel))
+                    {
+                        embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_S, TextFragments.SB_DB_REMOVE_S, setAuthor: false);
+                        heroEmbed = new DesignFactory().GetShindingBeyondHeroEmbed(foundedModel);
+                    }
+                    else
+                        embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_E, TextFragments.SB_DB_REMOVE_E, setAuthor: false);
+
+                    await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync(embed: heroEmbed).ConfigureAwait(false);
+                }
+                else
+                {
+                    var errorEmbed = new DesignFactory().GetEmbed("Not Found", $"Current Id [{id}] not found");
+                    await ctx.Channel.SendMessageAsync(embed: errorEmbed).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        [Command("Sbaddtest")]
+        [Description("add test data to db")]
+        public async Task AddTestDataToDb(CommandContext ctx)
+        {
+            try
+            {
+                DiscordEmbedBuilder embed = null;
+                DiscordEmbedBuilder heroEmbed = null;
+
+                if (ShiningBeyondManager.Instance.AddtoDataBase(ShiningBeyondManager.Instance.GetTESTDATA()))
+                {
+                    embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_S, TextFragments.SB_DB_ADD_S, setAuthor: false);
+                    heroEmbed = new DesignFactory().GetShindingBeyondHeroEmbed(ShiningBeyondManager.Instance.GetTESTDATA());
+                }
+                else
+                    embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_E, TextFragments.SB_DB_ADD_E, setAuthor: false);
+
+                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: heroEmbed).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        private HeroModel GetParsedModel(string[] msg)
+        {
+            return new HeroModel();
         }
 
 

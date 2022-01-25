@@ -59,6 +59,19 @@ namespace DiscordBotCSharp.MessageDesigns
         public const string SB_SKILL_SECONDARY = "Seconadry Skill: ";
         public const string SB_SKILL_WEAPON = "Weapon Skill: ";
 
+
+        #region Db Stuff
+        public const string SB_DB_SHOW_S = "Sucessful";
+        public const string SB_DB_SHOW_E = "Error";
+
+        public const string SB_DB_REMOVE_S = "Data successful removed from Database";
+        public const string SB_DB_REMOVE_E = "Error detected, so you cant remove Data to Database";
+
+        public const string SB_DB_ADD_S = "Data successful added to Database";
+        public const string SB_DB_ADD_E = "Error detected,so you cant add Data to Database";
+
+        #endregion
+
         #endregion
 
 
