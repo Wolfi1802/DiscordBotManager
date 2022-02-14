@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DiscordBotCSharp.ShiningBeyondAnalytic.DataBases;
+using System.Collections.Generic;
 
 namespace DiscordBotCSharp.ShiningBeyondAnalytic.DatabaseContexts
 {
@@ -11,20 +12,21 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic.DatabaseContexts
             this.heroDatabaseContext = new HeroDatabaseContext();
         }
 
-        public List<HeroModel> SelectAll()
-        {
-            return new List<HeroModel>(this.heroDatabaseContext.Model);
-        }
+        #region HeroModel
 
         public void Insert(HeroModel hero)
         {
-            this.heroDatabaseContext.Model.Add(hero);
+            this.heroDatabaseContext.HeroModel.Add(hero);
             this.heroDatabaseContext.SaveChanges();
         }
 
+        public List<HeroModel> SelectAllHeroes()
+        {
+            return new List<HeroModel>(this.heroDatabaseContext.HeroModel);
+        }
         public HeroModel GetModelBy(int id)
         {
-            foreach (var item in this.heroDatabaseContext.Model)
+            foreach (var item in this.heroDatabaseContext.HeroModel)
             {
                 if (item.HeroModelId == id)
                     return item;
@@ -33,11 +35,33 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic.DatabaseContexts
             return null;
         }
 
-
         public void Remove(HeroModel hero)
         {
-            this.heroDatabaseContext.Model.Remove(hero);
+            this.heroDatabaseContext.HeroModel.Remove(hero);
             this.heroDatabaseContext.SaveChanges();
         }
+
+        #endregion
+
+        //#region HeroAttributes
+
+        //public void Insert(HeroAttributes attributes)
+        //{
+        //    this.heroDatabaseContext.HeroAttributes.Add(attributes);
+        //    this.heroDatabaseContext.SaveChanges();
+        //}
+
+        //public List<HeroAttributes> SelectAllAttributes()
+        //{
+        //    return new List<HeroAttributes>(this.heroDatabaseContext.HeroAttributes);
+        //}
+
+        //public void Remove(HeroAttributes attributes)
+        //{
+        //    this.heroDatabaseContext.HeroAttributes.Remove(attributes);
+        //    this.heroDatabaseContext.SaveChanges();
+        //}
+
+        //#endregion
     }
 }

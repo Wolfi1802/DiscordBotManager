@@ -1,4 +1,5 @@
 ﻿using DiscordBotCSharp.ShiningBeyondAnalytic;
+using DiscordBotCSharp.ShiningBeyondAnalytic.DataBases;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using System;
@@ -64,6 +65,9 @@ namespace DiscordBotCSharp.MessageDesigns
         public DiscordEmbedBuilder GetProfileEmbed(CommandContext ctx, (string name, string value, bool inline) field,
             string Title = "", string Description = "")
         {
+            if (ctx == null)
+                throw new Exception($"{nameof(DesignFactory)},{nameof(GetProfileEmbed)},{nameof(ctx)} ist null");
+
             List<(string name, string value, bool inline)> list = new List<(string name, string value, bool inline)>();
             list.Add(field);
 
@@ -73,6 +77,9 @@ namespace DiscordBotCSharp.MessageDesigns
         public DiscordEmbedBuilder GetProfileEmbed(CommandContext ctx, string Title = "", string Description = "",
             List<(string name, string value, bool inline)> fieldList = null)
         {
+            if (ctx == null)
+                throw new Exception($"{nameof(DesignFactory)},{nameof(GetProfileEmbed)},{nameof(ctx)} ist null");
+
             var embed = this.GetEmbed(Title, Description, fieldList);
             embed.WithAuthor(name: ctx.Member.DisplayName, url: ctx.Member.AvatarUrl, iconUrl: ctx.Member.AvatarUrl);
 
@@ -81,26 +88,88 @@ namespace DiscordBotCSharp.MessageDesigns
 
         public DiscordEmbedBuilder GetShindingBeyondHeroEmbed(HeroModel model)
         {
-            var embed = new DiscordEmbedBuilder { Footer = new DiscordEmbedBuilder.EmbedFooter() };
-            embed.WithAuthor(name: model.Name, url: model.Url);
-            embed.AddField(TextFragments.SB_LVL, model.Lvl.ToString());
-            embed.AddField(TextFragments.SB_STATES, this.GetHeroModelStates(model));
-            embed.AddField(TextFragments.SB_SKILL_ULT, model.UltSkill);
-            embed.AddField(TextFragments.SB_SKILL_SECONDARY, model.SecondarySkill);
-            embed.AddField(TextFragments.SB_SKILL_WEAPON, model.WeaponSkill);
-            embed.Color = DiscordColor.CornflowerBlue;
-            embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail { Url = "https://static.wikia.nocookie.net/shining-beyond/images/e/e6/AltimaT1.png/revision/latest?cb=20210304040958" };
-            embed.Timestamp = DateTimeOffset.Now;
-            embed.Footer.IconUrl = TextFragments.WOLFI_BOT_PICUTRE;
-            embed.Footer.Text = TextFragments.BOT_INFO;
+            try
+            {
+                if (model == null)
+                    throw new Exception($"{nameof(DesignFactory)},{nameof(GetShindingBeyondHeroEmbed)},{nameof(model)} ist null");
 
+                //var ultSkills = this.GetFormatedSkills(model.Skills.UltSkills);
+                //var secondarySkills = this.GetFormatedSkills(model.Skills.SecondarySkills);
+                //var weaponSkills = this.GetFormatedSkills(model.Skills.WeaponSkills);
 
-            return embed;
+                var embed = new DiscordEmbedBuilder { Footer = new DiscordEmbedBuilder.EmbedFooter() };
+                embed.WithAuthor(name: model.Name, url: model.Url);
+                embed.AddField(TextFragments.SB_LVL, model.Lvl.ToString());
+                embed.AddField(TextFragments.SB_STATES, this.GetHeroModelStates(model));
+
+                //if (!string.IsNullOrWhiteSpace(ultSkills))
+                //    embed.AddField(TextFragments.SB_SKILL_ULT + model.Skills.UltSkillTitleName, ultSkills);
+                //else
+                //    embed.AddField(TextFragments.SB_SKILL_ULT + model.Skills.UltSkillTitleName, "not implemented");
+
+                //if (!string.IsNullOrWhiteSpace(secondarySkills))
+                //    embed.AddField(TextFragments.SB_SKILL_SECONDARY + model.Skills.SecondarySkillsTitleName, secondarySkills);
+                //else
+                //    embed.AddField(TextFragments.SB_SKILL_SECONDARY + model.Skills.SecondarySkillsTitleName, "not implemented");
+
+                //if (!string.IsNullOrWhiteSpace(weaponSkills))
+                //    embed.AddField(TextFragments.SB_SKILL_WEAPON + model.Skills.WeaponSkillsTitleName, weaponSkills);
+                //else
+                //    embed.AddField(TextFragments.SB_SKILL_WEAPON + model.Skills.WeaponSkillsTitleName, "not implemented");
+
+                embed.Color = DiscordColor.CornflowerBlue;
+                embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail { Url = model.Url };
+                embed.Timestamp = DateTimeOffset.Now;
+                embed.Footer.IconUrl = TextFragments.WOLFI_BOT_PICUTRE;
+                embed.Footer.Text = TextFragments.BOT_INFO;
+
+                return embed;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public string GetFormatedSkills(Dictionary<string, string> skillPairs)
+        {
+            string skillPairFormated = string.Empty;
+
+            foreach (var skillPair in skillPairs)
+            {
+                skillPairFormated += $"{skillPair.Key}:\n{skillPair.Value}\n";
+            }
+            return skillPairFormated;
+        }
+
+        public DiscordEmbedBuilder GetHowToAddEmbed()
+        {
+            try
+            {
+                var embed = new DiscordEmbedBuilder { Footer = new DiscordEmbedBuilder.EmbedFooter() };
+                embed.WithAuthor(name: "Explanation how to add to database");
+                embed.AddField("Formatter", ";SbAdd\n Name\n UltimativeSkillName\n SecondarySkillName\n WeaponSkillName\n HeroPictureUrl\n LVL\n StarGrade\n HP\n ATK\n DEF\n");
+                embed.AddField("Example", ";SbAdd Altima Celestial_Polarity Crystal_Skill Altima_Weapon_Skill  https://static.wikia.nocookie.net/shining-beyond/images/e/e6/AltimaT1.png/revision/latest?cb=20210304040958 1 3 1383 138 209");
+                embed.Color = DiscordColor.Red;
+                embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail { Url = TextFragments.WOLFI_BOT_PICUTRE };
+                embed.Timestamp = DateTimeOffset.Now;
+                embed.Footer.IconUrl = TextFragments.WOLFI_BOT_PICUTRE;
+                embed.Footer.Text = TextFragments.BOT_INFO;
+
+                return embed;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         private string GetHeroModelStates(HeroModel model)
         {
-            return $"Atk: {model.Attributes.Atk}\nDef: {model.Attributes.Def}\nHp: {model.Attributes.Hp}\n";//TODO formatierung!
+            if (model == null)
+                throw new Exception($"{nameof(DesignFactory)},{nameof(GetHeroModelStates)},{nameof(model)} ist null");
+            return "ERROR";
+            //return $"Atk: {model.HeroAttributes.Atk}\nDef: {model.HeroAttributes.Def}\nHp: {model.HeroAttributes.Hp}\n";//TODO formatierung!
         }
     }
 }

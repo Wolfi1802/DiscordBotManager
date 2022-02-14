@@ -1,5 +1,6 @@
 ﻿using DiscordBotCSharp.MessageDesigns;
 using DiscordBotCSharp.ShiningBeyondAnalytic.DatabaseContexts;
+using DiscordBotCSharp.ShiningBeyondAnalytic.DataBases;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using System;
@@ -22,7 +23,7 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
         private ShiningBeyondManager()
         {
             this.heroDatabaseContextWrapper = new HeroDatabaseContextWrapper();
-            this.listOfHeros = new List<HeroModel>(this.heroDatabaseContextWrapper.SelectAll());
+            this.listOfHeros = new List<HeroModel>(this.heroDatabaseContextWrapper.SelectAllHeroes());
         }
 
         #region DBVerwaltung
@@ -62,29 +63,42 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
 
         #endregion
 
-        public async void ShowHeroData(CommandContext ctx, string[] msg)
+        public async void TryShowHeroData(CommandContext ctx, string[] msg)
         {
+
             if (ctx == null)
-                throw new NullReferenceException($"{nameof(ShiningBeyondManager)}, {nameof(ShowHeroData)}");
+                throw new NullReferenceException($"{nameof(ShiningBeyondManager)}, {nameof(TryShowHeroData)}");
             if (msg == null)
-                throw new NullReferenceException($"{nameof(ShiningBeyondManager)}, {nameof(ShowHeroData)}");
+                throw new NullReferenceException($"{nameof(ShiningBeyondManager)}, {nameof(TryShowHeroData)}");
 
-            DiscordEmbedBuilder embed = null;
+            try
+            {
+                DiscordEmbedBuilder embed = null;
 
-            if (this.ExistsHero(msg))
-                embed = this.GetHeroDataEmbed(msg);
-            else
-                embed = this.GetDataNotFoundEmbed(msg[0]);
+                if (this.ExistsHero(msg))
+                    embed = this.GetHeroDataEmbed(msg);
+                else
+                    embed = this.GetDataNotFoundEmbed(msg[0]);
 
-            await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private bool ExistsHero(string[] msg)
         {
             if (msg == null)
                 throw new NullReferenceException($"{nameof(ShiningBeyondManager)}, {nameof(ExistsHero)}");
-            if (msg[0].ToLower().Equals("altima"))
-                return true;
+
+            foreach (HeroModel hero in listOfHeros)
+            {
+                if (hero.Name.Equals(msg[0]))
+                    return true;
+            }
+
             return false;
         }
 
@@ -100,30 +114,7 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
 
         private HeroModel GetHeroModel(string name, int lvl)
         {
-            //HeroModel model = null;
-            //richtig rotze...neu machen 
-            //if (nameof(HeroEnum.Altima).ToLower().Equals(name))
-            //{
-            //    model = new HeroModel();
-            //    model.Name = name.ToUpperInvariant();
-            //    model.Lvl = lvl == default ? 1 : lvl;
-            //    model.Url = "https://static.wikia.nocookie.net/shining-beyond/images/e/e6/AltimaT1.png/revision/latest?cb=20210304040958";
-            //    model.UltSkill = "description of effect coming soon";
-            //    model.SecondarySkill = "description of effect coming soon";
-            //    model.WeaponSkill = "description of effect coming soon";
-
-            //    var attributes = new HeroAttributes();
-            //    attributes.Atk = 5000;
-            //    attributes.Def = 3000;
-            //    attributes.Hp = 50000;
-
-            //    model.Attributes = attributes;
-
-            //    this.listOfHeros.Add(model);
-            //    this.heroDatabaseContextWrapper.Insert(model);
-            //}
-
-            foreach (var item in this.listOfHeros)
+            foreach (var item in this.listOfHeros)//TODO[TS] lvl suche implementieren
             {
                 if (item.Name.ToLower().Equals(name))
                     return item;
@@ -137,21 +128,32 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
         public HeroModel GetTESTDATA(int id = -1)
         {
             var model = new HeroModel();
+            //model.HeroAttributes = new HeroAttributes();
+            //model.Skills = new Skills();
+
             model.Name = "Altima";
-            if (id != -1)
-                model.HeroModelId = id;
-            model.Lvl = 200;
+
+            //model.Skills.UltSkillTitleName = "Celestial_Polarity";
+            //model.Skills.SecondarySkillsTitleName = "Crystal_Skill";
+            //model.Skills.WeaponSkillsTitleName = "Altima_Weapon_Skill";
+
+            //model.Skills.UltSkills.Add("Leap_Atk", "Leaps and deals X% damage of Hero's DEF to enemies within the targeted area\n");
+            //model.Skills.UltSkills.Add("Vortex", "Pull enemies towards the targeted location\n");
+            //model.Skills.UltSkills.Add("Heal Shield", "X% Change to apply. Each hit received will heal for x%\n");
+
+            //model.Skills.SecondarySkills.Add("Shield:Magic", "Negates X% of skill damagereceived\n");
+            //model.Skills.SecondarySkills.Add("HP Recovery Up", "Increase healing received by X%\n");
+
+            //model.Skills.WeaponSkills.Add("Thorns", "Relect X% damage Taken\n");
+
             model.Url = "https://static.wikia.nocookie.net/shining-beyond/images/e/e6/AltimaT1.png/revision/latest?cb=20210304040958";
-            model.UltSkill = "description of effect coming soon";
-            model.SecondarySkill = "description of effect coming soon";
-            model.WeaponSkill = "description of effect coming soon";
+            model.Lvl = 1;
+            model.StarGrade = 3;
 
-            var attributes = new HeroAttributes();
-            attributes.Atk = 5000;
-            attributes.Def = 3000;
-            attributes.Hp = 50000;
+            //model.HeroAttributes.Hp = 1383;
+            //model.HeroAttributes.Atk = 138;
+            //model.HeroAttributes.Def = 209;
 
-            model.Attributes = attributes;
             return model;
         }
 

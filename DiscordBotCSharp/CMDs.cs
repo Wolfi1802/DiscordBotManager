@@ -1,6 +1,8 @@
 ﻿using DiscordBotCSharp.Games.TicTacTo;
+using DiscordBotCSharp.Helper;
 using DiscordBotCSharp.MessageDesigns;
 using DiscordBotCSharp.ShiningBeyondAnalytic;
+using DiscordBotCSharp.ShiningBeyondAnalytic.DataBases;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -20,6 +22,46 @@ namespace DiscordBotCSharp
         /// Die Variable darf nur zum darstellen des aktuellen löschen Zustandes benutzt werden.
         /// </summary>
         private bool deleteUnderWorking = false;
+        #region Andere Methoden
+
+        private bool IsWolfiId(CommandContext ctx)
+        {
+            if (323381699675422724 != ctx.Message.Author.Id)
+                return false;
+            else
+                return true;
+        }
+
+        private HeroModel GetParsedModel(string[] msg)
+        {
+            var model = new HeroModel();
+            //model.HeroAttributes = new HeroAttributes();
+            //model.Skills = new Skills();
+            try
+            {
+                if (msg.Length != 10)//[TS] hier müssen alle 10 Attribute belegt sein
+                    throw new Exception();
+
+                model.Name = msg[0];
+                //model.Skills.UltSkillTitleName = msg[1];
+                //model.Skills.SecondarySkillsTitleName = msg[2];
+                //model.Skills.WeaponSkillsTitleName = msg[3];
+                model.Url = msg[4];
+                model.Lvl = Parsehelper.ParseInt(msg[5]);
+                model.StarGrade = Parsehelper.ParseInt(msg[6]);
+                //model.HeroAttributes.Hp = Parsehelper.ParseInt(msg[7]);
+                //model.HeroAttributes.Atk = Parsehelper.ParseInt(msg[8]);
+                //model.HeroAttributes.Def = Parsehelper.ParseInt(msg[9]);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return model;
+        }
+
+        #endregion
+
 
         #region GlobalStuff
 
@@ -28,7 +70,7 @@ namespace DiscordBotCSharp
         public async Task DeleteChannelMessages(CommandContext ctx, int amount)
         {
 
-            if (323381699675422724 != ctx.Message.Author.Id)
+            if (this.IsWolfiId(ctx))
                 return;
 
             TimeSpan valueOfDays = new TimeSpan();
@@ -126,6 +168,7 @@ namespace DiscordBotCSharp
         #endregion 
 
         #region Shining Beyong 
+
         [Command("SbInfo")]
         [Description("Get all Infos About Sb commands")]
         public async Task ShowShiningBeyongInfos(CommandContext ctx)
@@ -142,7 +185,7 @@ namespace DiscordBotCSharp
         {
             try
             {
-                ShiningBeyondManager.Instance.ShowHeroData(ctx, msg);
+                ShiningBeyondManager.Instance.TryShowHeroData(ctx, msg);
             }
             catch (Exception ex)
             {
@@ -155,25 +198,28 @@ namespace DiscordBotCSharp
         [Description("Add Hero to DataBase")]
         public async Task AddHeroToDataBase(CommandContext ctx, params string[] msg)
         {
-            var embed2 = new DesignFactory().GetEmbed("Not Ready", "Current Command isnt ready!");
-            await ctx.Channel.SendMessageAsync(embed: embed2).ConfigureAwait(false);
-            return;
+            if (!this.IsWolfiId(ctx))
+            {
+                await ctx.Channel.SendMessageAsync(embed: new DesignFactory().GetEmbed("Permission Error", "Ask Wolfi for this command,currently its locked for you", setAuthor: false)).ConfigureAwait(false);
+                return;
+            }
 
             try
-            {//TODO add not rdy bcs missin parse!!!
+            {
                 DiscordEmbedBuilder embed = null;
                 DiscordEmbedBuilder heroEmbed = null;
+                var parsedModel = this.GetParsedModel(msg);
 
-                if (ShiningBeyondManager.Instance.AddtoDataBase(this.GetParsedModel(msg)))
+                if (ShiningBeyondManager.Instance.AddtoDataBase(parsedModel))
                 {
                     embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_S, TextFragments.SB_DB_ADD_S, setAuthor: false);
-                    //heroEmbed = new DesignFactory().GetShindingBeyondHeroEmbed(ShiningBeyondManager.Instance.GetTESTDATA());
+
+                    await ctx.Channel.SendMessageAsync(embed: new DesignFactory().GetShindingBeyondHeroEmbed(parsedModel)).ConfigureAwait(false);
                 }
                 else
                     embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_E, TextFragments.SB_DB_ADD_E, setAuthor: false);
 
                 await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
-                //await ctx.Channel.SendMessageAsync(embed: heroEmbed).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -187,22 +233,24 @@ namespace DiscordBotCSharp
         {
             try
             {
+                if (!this.IsWolfiId(ctx))
+                {
+                    await ctx.Channel.SendMessageAsync(embed: new DesignFactory().GetEmbed("Permission Error", "Ask Wolfi for this command,currently its locked for you", setAuthor: false)).ConfigureAwait(false);
+                    return;
+                }
+
                 DiscordEmbedBuilder embed = null;
-                DiscordEmbedBuilder heroEmbed = null;
                 HeroModel foundedModel = ShiningBeyondManager.Instance.GetModelBy(int.Parse(id));
 
                 if (foundedModel != null)
                 {
                     if (ShiningBeyondManager.Instance.RemoveFromDataBase(foundedModel))
-                    {
                         embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_S, TextFragments.SB_DB_REMOVE_S, setAuthor: false);
-                        heroEmbed = new DesignFactory().GetShindingBeyondHeroEmbed(foundedModel);
-                    }
                     else
                         embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_E, TextFragments.SB_DB_REMOVE_E, setAuthor: false);
 
                     await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
-                    await ctx.Channel.SendMessageAsync(embed: heroEmbed).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync(embed: new DesignFactory().GetShindingBeyondHeroEmbed(foundedModel)).ConfigureAwait(false);
                 }
                 else
                 {
@@ -222,18 +270,40 @@ namespace DiscordBotCSharp
         {
             try
             {
+                if (!this.IsWolfiId(ctx))
+                {
+                    await ctx.Channel.SendMessageAsync(embed: new DesignFactory().GetEmbed("Permission Error", "Ask Wolfi for this command,currently its locked for you", setAuthor: false)).ConfigureAwait(false);
+                    return;
+                }
+
                 DiscordEmbedBuilder embed = null;
                 DiscordEmbedBuilder heroEmbed = null;
 
                 if (ShiningBeyondManager.Instance.AddtoDataBase(ShiningBeyondManager.Instance.GetTESTDATA()))
-                {
                     embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_S, TextFragments.SB_DB_ADD_S, setAuthor: false);
-                    heroEmbed = new DesignFactory().GetShindingBeyondHeroEmbed(ShiningBeyondManager.Instance.GetTESTDATA());
-                }
                 else
                     embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_E, TextFragments.SB_DB_ADD_E, setAuthor: false);
 
                 await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: new DesignFactory().GetShindingBeyondHeroEmbed(ShiningBeyondManager.Instance.GetTESTDATA())).ConfigureAwait(false);
+
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        [Command("Howtoadd")]
+        [Description("Explains the formater to add to db")]
+        public async Task ShowExplainationToAdd(CommandContext ctx)
+        {
+            try
+            {
+                var embed = new DesignFactory().GetHowToAddEmbed();
+                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+
+                var heroEmbed = new DesignFactory().GetShindingBeyondHeroEmbed(ShiningBeyondManager.Instance.GetTESTDATA());
                 await ctx.Channel.SendMessageAsync(embed: heroEmbed).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -242,12 +312,6 @@ namespace DiscordBotCSharp
             }
         }
 
-        private HeroModel GetParsedModel(string[] msg)
-        {
-            return new HeroModel();
-        }
-
-
         #endregion
 
         #region Games
@@ -255,9 +319,10 @@ namespace DiscordBotCSharp
         [Description("Start TicTacTo (only German Language atm)")]
         private async Task StartTicTacTo(CommandContext ctx)
         {
+#if DEBUG
             TicTacToEntry gameStart = new TicTacToEntry(ctx.Member.Id);
             gameStart.StartGame(ctx);
-
+#endif
         }
 
         #endregion
