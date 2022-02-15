@@ -1,9 +1,11 @@
 ﻿using DiscordBotCSharp.ShiningBeyondAnalytic;
 using DiscordBotCSharp.ShiningBeyondAnalytic.DataBases;
+using DiscordBotCSharp.ShiningBeyondAnalytic.Enums;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DiscordBotCSharp.MessageDesigns
@@ -93,29 +95,29 @@ namespace DiscordBotCSharp.MessageDesigns
                 if (model == null)
                     throw new Exception($"{nameof(DesignFactory)},{nameof(GetShindingBeyondHeroEmbed)},{nameof(model)} ist null");
 
-                //var ultSkills = this.GetFormatedSkills(model.Skills.UltSkills);
-                //var secondarySkills = this.GetFormatedSkills(model.Skills.SecondarySkills);
-                //var weaponSkills = this.GetFormatedSkills(model.Skills.WeaponSkills);
+                var ultSkills = this.GetFormatedSkills(model.Skills, SkillEnum.Ultimative);
+                var secondarySkills = this.GetFormatedSkills(model.Skills, SkillEnum.Secondary);
+                var weaponSkills = this.GetFormatedSkills(model.Skills, SkillEnum.Weapon);
 
                 var embed = new DiscordEmbedBuilder { Footer = new DiscordEmbedBuilder.EmbedFooter() };
-                embed.WithAuthor(name: model.Name, url: model.Url);
+                embed.WithAuthor(name: $"{model.Name} ({model.ClassRole})", url: model.Url);
                 embed.AddField(TextFragments.SB_LVL, model.Lvl.ToString());
                 embed.AddField(TextFragments.SB_STATES, this.GetHeroModelStates(model));
 
-                //if (!string.IsNullOrWhiteSpace(ultSkills))
-                //    embed.AddField(TextFragments.SB_SKILL_ULT + model.Skills.UltSkillTitleName, ultSkills);
-                //else
-                //    embed.AddField(TextFragments.SB_SKILL_ULT + model.Skills.UltSkillTitleName, "not implemented");
+                if (!string.IsNullOrWhiteSpace(ultSkills))
+                    embed.AddField(TextFragments.SB_SKILL_ULT + model.Skills.UltSkillTitleName, ultSkills);
+                else
+                    embed.AddField(TextFragments.SB_SKILL_ULT + model.Skills.UltSkillTitleName, "not implemented");
 
-                //if (!string.IsNullOrWhiteSpace(secondarySkills))
-                //    embed.AddField(TextFragments.SB_SKILL_SECONDARY + model.Skills.SecondarySkillsTitleName, secondarySkills);
-                //else
-                //    embed.AddField(TextFragments.SB_SKILL_SECONDARY + model.Skills.SecondarySkillsTitleName, "not implemented");
+                if (!string.IsNullOrWhiteSpace(secondarySkills))
+                    embed.AddField(TextFragments.SB_SKILL_SECONDARY + model.Skills.SecondarySkillsTitleName, secondarySkills);
+                else
+                    embed.AddField(TextFragments.SB_SKILL_SECONDARY + model.Skills.SecondarySkillsTitleName, "not implemented");
 
-                //if (!string.IsNullOrWhiteSpace(weaponSkills))
-                //    embed.AddField(TextFragments.SB_SKILL_WEAPON + model.Skills.WeaponSkillsTitleName, weaponSkills);
-                //else
-                //    embed.AddField(TextFragments.SB_SKILL_WEAPON + model.Skills.WeaponSkillsTitleName, "not implemented");
+                if (!string.IsNullOrWhiteSpace(weaponSkills))
+                    embed.AddField(TextFragments.SB_SKILL_WEAPON + model.Skills.WeaponSkillsTitleName, weaponSkills);
+                else
+                    embed.AddField(TextFragments.SB_SKILL_WEAPON + model.Skills.WeaponSkillsTitleName, "not implemented");
 
                 embed.Color = DiscordColor.CornflowerBlue;
                 embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail { Url = model.Url };
@@ -131,15 +133,18 @@ namespace DiscordBotCSharp.MessageDesigns
             }
         }
 
-        public string GetFormatedSkills(Dictionary<string, string> skillPairs)
+        public string GetFormatedSkills(Skills skills, SkillEnum skillEnum)
         {
-            string skillPairFormated = string.Empty;
+            string skillsToShowFormated = string.Empty;
 
-            foreach (var skillPair in skillPairs)
+            var skillsToShow = skills.SkillsSkillModel.Where(item => item.TypeOfSkill == skillEnum);
+
+            foreach (var item in skillsToShow)
             {
-                skillPairFormated += $"{skillPair.Key}:\n{skillPair.Value}\n";
+                skillsToShowFormated += $"*{item.Name}*\n```{item.Description}```\n";
             }
-            return skillPairFormated;
+
+            return skillsToShowFormated;
         }
 
         public DiscordEmbedBuilder GetHowToAddEmbed()
@@ -168,8 +173,8 @@ namespace DiscordBotCSharp.MessageDesigns
         {
             if (model == null)
                 throw new Exception($"{nameof(DesignFactory)},{nameof(GetHeroModelStates)},{nameof(model)} ist null");
-            return "ERROR";
-            //return $"Atk: {model.HeroAttributes.Atk}\nDef: {model.HeroAttributes.Def}\nHp: {model.HeroAttributes.Hp}\n";//TODO formatierung!
+
+            return $"Atk: {model.Attributes.Atk}\nDef: {model.Attributes.Def}\nHp: {model.Attributes.Hp}\n";
         }
     }
 }

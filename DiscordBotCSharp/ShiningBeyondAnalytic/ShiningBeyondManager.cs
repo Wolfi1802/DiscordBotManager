@@ -1,6 +1,7 @@
 ﻿using DiscordBotCSharp.MessageDesigns;
 using DiscordBotCSharp.ShiningBeyondAnalytic.DatabaseContexts;
 using DiscordBotCSharp.ShiningBeyondAnalytic.DataBases;
+using DiscordBotCSharp.ShiningBeyondAnalytic.Enums;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using System;
@@ -95,7 +96,7 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
 
             foreach (HeroModel hero in listOfHeros)
             {
-                if (hero.Name.Equals(msg[0]))
+                if (hero.Name.ToLower().Equals(msg[0].ToLower()))
                     return true;
             }
 
@@ -114,13 +115,22 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
 
         private HeroModel GetHeroModel(string name, int lvl)
         {
-            foreach (var item in this.listOfHeros)//TODO[TS] lvl suche implementieren
+            HeroModel model = null;
+            foreach (var item in this.listOfHeros)
             {
                 if (item.Name.ToLower().Equals(name))
-                    return item;
+                {
+                    model = item;
+                    break;
+                }
             }
 
-            return null;
+            if (lvl != default && model != null)
+            {
+                //TODO brechne states anhand des lvls 2-200!!!
+            }
+
+                return model;
         }
 
 
@@ -128,31 +138,62 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
         public HeroModel GetTESTDATA(int id = -1)
         {
             var model = new HeroModel();
-            //model.HeroAttributes = new HeroAttributes();
-            //model.Skills = new Skills();
+            var attributes = new HeroAttributes();
+            var skills = new Skills();
 
             model.Name = "Altima";
-
-            //model.Skills.UltSkillTitleName = "Celestial_Polarity";
-            //model.Skills.SecondarySkillsTitleName = "Crystal_Skill";
-            //model.Skills.WeaponSkillsTitleName = "Altima_Weapon_Skill";
-
-            //model.Skills.UltSkills.Add("Leap_Atk", "Leaps and deals X% damage of Hero's DEF to enemies within the targeted area\n");
-            //model.Skills.UltSkills.Add("Vortex", "Pull enemies towards the targeted location\n");
-            //model.Skills.UltSkills.Add("Heal Shield", "X% Change to apply. Each hit received will heal for x%\n");
-
-            //model.Skills.SecondarySkills.Add("Shield:Magic", "Negates X% of skill damagereceived\n");
-            //model.Skills.SecondarySkills.Add("HP Recovery Up", "Increase healing received by X%\n");
-
-            //model.Skills.WeaponSkills.Add("Thorns", "Relect X% damage Taken\n");
-
+            model.ClassRole = ClassTypeEnum.Warrior;
             model.Url = "https://static.wikia.nocookie.net/shining-beyond/images/e/e6/AltimaT1.png/revision/latest?cb=20210304040958";
             model.Lvl = 1;
             model.StarGrade = 3;
 
-            //model.HeroAttributes.Hp = 1383;
-            //model.HeroAttributes.Atk = 138;
-            //model.HeroAttributes.Def = 209;
+            skills.SkillsSkillModel = new List<SkillModel>();
+            skills.UltSkillTitleName = "Celestial_Polarity";
+            skills.SecondarySkillsTitleName = "Crystal_Skill";
+            skills.WeaponSkillsTitleName = "Altima_Weapon_Skill";
+
+            var Leap_Atk = new SkillModel();
+            Leap_Atk.Name = "Leap_Atk";
+            Leap_Atk.Description = "Leaps and deals X% damage of Hero's DEF to enemies within the targeted area";
+            Leap_Atk.TypeOfSkill = SkillEnum.Ultimative;
+            skills.SkillsSkillModel.Add(Leap_Atk);
+
+            var Vortex = new SkillModel();
+            Vortex.Name = "Vortex";
+            Vortex.Description = "Pull enemies towards the targeted location";
+            Vortex.TypeOfSkill = SkillEnum.Ultimative;
+            skills.SkillsSkillModel.Add(Vortex);
+
+            var Heal_Shield = new SkillModel();
+            Heal_Shield.Name = "Heal_Shield";
+            Heal_Shield.Description = "X% Change to apply. Each hit received will heal for x%";
+            Heal_Shield.TypeOfSkill = SkillEnum.Ultimative;
+            skills.SkillsSkillModel.Add(Heal_Shield);
+
+            var Shield_Magic = new SkillModel();
+            Shield_Magic.Name = "Shield_Magic";
+            Shield_Magic.Description = "Negates X% of skill damagereceived";
+            Shield_Magic.TypeOfSkill = SkillEnum.Secondary;
+            skills.SkillsSkillModel.Add(Shield_Magic);
+
+            var HP_Recovery_Up = new SkillModel();
+            HP_Recovery_Up.Name = "HP_Recovery_Up";
+            HP_Recovery_Up.Description = "Increase healing received by X%";
+            HP_Recovery_Up.TypeOfSkill = SkillEnum.Secondary;
+            skills.SkillsSkillModel.Add(HP_Recovery_Up);
+
+            var Thorns = new SkillModel();
+            Thorns.Name = "Thorns";
+            Thorns.Description = "Relect X% damage Taken";
+            Thorns.TypeOfSkill = SkillEnum.Weapon;
+            skills.SkillsSkillModel.Add(Thorns);
+
+            attributes.Hp = 1383;
+            attributes.Atk = 138;
+            attributes.Def = 209;
+
+            model.Skills = skills;
+            model.Attributes = attributes;
 
             return model;
         }

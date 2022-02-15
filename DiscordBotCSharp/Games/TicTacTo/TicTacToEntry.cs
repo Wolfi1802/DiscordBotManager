@@ -49,7 +49,7 @@ namespace DiscordBotCSharp.Games.TicTacTo
         {
             ctx.Client.MessageCreated += OnMesssageCreated;
 
-            //TODO[TS]4  multiplayer
+            //TODO[TS]ttt 4  multiplayer
 
             do
             {
@@ -57,7 +57,7 @@ namespace DiscordBotCSharp.Games.TicTacTo
                 {
                     try
                     {
-                        if (msg.Content.Length >= 3)//TODO[TS] auslagern 
+                        if (msg.Content.Length >= 3)//TODO[TS] ttt auslagern 
                         {
 
                             bool fieldSetSuccessfull = this.SetFieldBy(this.msg.Content);//player set Field

@@ -78,9 +78,9 @@ namespace DiscordBotCSharp
 
                 discordClient.UpdateStatusAsync(discordStatus);
 
-                Debug.WriteLine("BotPing: " + discordClient.Ping);//TODO Logg
-                Debug.WriteLine("Login: " + DateTime.Now.ToString());//TODO Logg
-                Debug.WriteLine("Bot Staus set to: " + discordStatus.Name);//TODO Logg
+                Debug.WriteLine("BotPing: " + discordClient.Ping);//TODO DEBUG Logg
+                Debug.WriteLine("Login: " + DateTime.Now.ToString());//TODO DEBUG Logg
+                Debug.WriteLine("Bot Staus set to: " + discordStatus.Name);//TODO DEBUG Logg
             }
 
             return Task.CompletedTask;

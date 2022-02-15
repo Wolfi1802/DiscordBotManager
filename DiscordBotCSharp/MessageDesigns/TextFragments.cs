@@ -18,7 +18,7 @@ namespace DiscordBotCSharp.MessageDesigns
         public const string BOT_CREATED_TIME = "03.12.2020 19:22:59";
         public const string BOT_UPDATE_TIME = "24.01.2022 15:00:00";
         public const string COMMANDS = ";myuserinfo\n;info\n;ttt\n;getgit\n;sbinfo";
-        public const string PATCH_NOTES = "Bot Language changed to english";
+        public const string PATCH_NOTES = "->DataBase changes\n ->New commands: ;SbAdd | ;SbRemove | ;Sbaddtest | ;Howtoadd";
         public const string PROJECT_LINK = "https://github.com/Wolfi1802/DiscordBotManager";
         public const string WOLFIS_NAME = "Wolfi";
 
