@@ -277,7 +277,6 @@ namespace DiscordBotCSharp
                 }
 
                 DiscordEmbedBuilder embed = null;
-                DiscordEmbedBuilder heroEmbed = null;
 
                 if (ShiningBeyondManager.Instance.AddtoDataBase(ShiningBeyondManager.Instance.GetTESTDATA()))
                     embed = new DesignFactory().GetEmbed(TextFragments.SB_DB_SHOW_S, TextFragments.SB_DB_ADD_S, setAuthor: false);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DiscordBotCSharp.ShiningBeyondAnalytic.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,6 +14,7 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic.DataBases
         public int SkillModelId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public SkillEnum TypeOfSkill { get; set; }
 
         public int SkillsSkillModelId { get; set; }
         public Skills SkillsSkillModel { get; set; }
