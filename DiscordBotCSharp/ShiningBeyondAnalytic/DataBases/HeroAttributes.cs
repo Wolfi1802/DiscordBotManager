@@ -6,18 +6,17 @@ using System.Text;
 
 namespace DiscordBotCSharp.ShiningBeyondAnalytic.DataBases
 {
-    //public class HeroAttributes
-    //{
-    //    [Key]
-    //    public int HeroAttributesId { set; get; }
+    public class HeroAttributes
+    {
+        [ForeignKey("HeroModelAttribute")]
+        public int HeroAttributesId { set; get; }
 
-    //    public int Atk { set; get; }
+        public int Atk { set; get; }
 
-    //    public int Def { set; get; }
+        public int Def { set; get; }
 
-    //    public int Hp { set; get; }
+        public int Hp { set; get; }
 
-    //[ForeignKey("HeroModel")]
-    //public virtual HeroModel HeroModel { set; get; }
-    //}
+        public virtual HeroModel HeroModelAttribute { set; get; }
+    }
 }
