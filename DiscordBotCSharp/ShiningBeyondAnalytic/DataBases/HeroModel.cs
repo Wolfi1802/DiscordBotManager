@@ -8,7 +8,6 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic.DataBases
 {
     public class HeroModel
     {
-        [Key]
         public int HeroModelId { set; get; }
 
         public string Name { set; get; }
@@ -19,10 +18,7 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic.DataBases
 
         public int StarGrade { set; get; }
 
-        //[ForeignKey("HeroAttributes")]
-        //public virtual HeroAttributes HeroAttributes { set; get; }
-
-        //[ForeignKey("Skills")]
-        //public Skills Skills { set; get; }
+        public virtual HeroAttributes Attributes { set; get; }
+        public virtual Skills Skills { set; get; }
     }
 }

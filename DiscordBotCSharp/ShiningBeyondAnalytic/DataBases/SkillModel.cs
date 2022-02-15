@@ -8,17 +8,13 @@ using System.Threading.Tasks;
 
 namespace DiscordBotCSharp.ShiningBeyondAnalytic.DataBases
 {
-    //public class SkillModel
-    //{
-    //    [Key]
-    //    public int SkillModelId { get; set; }
-    //    public string Name { get; set; }
-    //    public string Description { get; set; }
-    //    public bool IsUltimative { get; set; }
-    //    public bool IsSecondary { get; set; }
-    //    public bool Isweapon { get; set; }
+    public class SkillModel
+    {
+        public int SkillModelId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
 
-    //    [ForeignKey("Skills")]
-    //    public Skills Skills { get; set; }
-    //}
+        public int SkillsSkillModelId { get; set; }
+        public Skills SkillsSkillModel { get; set; }
+    }
 }

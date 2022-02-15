@@ -7,11 +7,11 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic.DatabaseContexts
     {
         public DbSet<HeroModel> HeroModel { get; set; }
 
-        //public DbSet<HeroAttributes> HeroAttributes { get; set; }
+        public DbSet<HeroAttributes> HeroAttributes { get; set; }
 
-        //public DbSet<Skills> Skills { get; set; }
+        public DbSet<Skills> Skills { get; set; }
 
-        //public DbSet<SkillModel> SkillModel { get; set; }
+        public DbSet<SkillModel> SkillModel { get; set; }
 
     }
 }
