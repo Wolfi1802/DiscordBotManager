@@ -176,5 +176,6 @@ namespace DiscordBotCSharp.MessageDesigns
 
             return $"Atk: {model.Attributes.Atk}\nDef: {model.Attributes.Def}\nHp: {model.Attributes.Hp}\n";
         }
+
     }
 }

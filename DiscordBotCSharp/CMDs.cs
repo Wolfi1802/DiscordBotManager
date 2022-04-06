@@ -22,6 +22,7 @@ namespace DiscordBotCSharp
         /// Die Variable darf nur zum darstellen des aktuellen löschen Zustandes benutzt werden.
         /// </summary>
         private bool deleteUnderWorking = false;
+
         #region Andere Methoden
 
         private bool IsWolfiId(CommandContext ctx)
@@ -62,7 +63,6 @@ namespace DiscordBotCSharp
 
         #endregion
 
-
         #region GlobalStuff
 
         [Command("Delete")]
@@ -70,7 +70,7 @@ namespace DiscordBotCSharp
         public async Task DeleteChannelMessages(CommandContext ctx, int amount)
         {
 
-            if (this.IsWolfiId(ctx))
+            if (!this.IsWolfiId(ctx))
                 return;
 
             TimeSpan valueOfDays = new TimeSpan();
@@ -125,6 +125,34 @@ namespace DiscordBotCSharp
 
         }
 
+        [Command("Announcement")]
+        [Description("Secret command from wolfi :P")]
+        public async Task ShowAnnouncement(CommandContext ctx, params string[] msgArray)
+        {
+            if (!this.IsWolfiId(ctx))
+                return;
+
+            try
+            {
+                string announcementToPublish = string.Empty;
+
+                foreach (var word in msgArray)
+                    announcementToPublish += word + " ";
+
+                foreach (var channel in Bot.ChannelsForAnnouncements)
+                {
+                    await channel.SendMessageAsync(new DesignFactory().GetEmbed(TextFragments.ANNOUNCEMENTS,
+                        announcementToPublish, setAuthor: false)).ConfigureAwait(false);
+
+                    await ctx.Channel.SendMessageAsync($"ANNOUNCEMENT ging raus an->{channel.Guild.Name}<-");
+                }
+            }
+            catch
+            {
+                await ctx.Channel.SendMessageAsync(TextFragments.ERROR_ANNOUNCEMENT).ConfigureAwait(false);
+            }
+        }
+
         [Command("UserInfo")]
         [Description("Show your personal Informations")]
         public async Task GiveUserInformations(CommandContext ctx)
@@ -143,6 +171,7 @@ namespace DiscordBotCSharp
         {
             List<(string name, string value, bool inline)> field = new List<(string name, string value, bool inline)>();
             field.Add((TextFragments.LIST_COMMANDS, TextFragments.COMMANDS, false));
+            field.Add((TextFragments.BOT_SERVICE, TextFragments.BOT_SERVICELIST, false));
             field.Add((TextFragments.CREATED, TextFragments.BOT_CREATED_TIME, true));
             field.Add((TextFragments.HELPER, TextFragments.NOBODY, true));
             field.Add((TextFragments.LAST_UPDATE, TextFragments.BOT_UPDATE_TIME, false));
@@ -177,6 +206,23 @@ namespace DiscordBotCSharp
                 TextFragments.SB_TEASER_DESCRIPTION);
 
             await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+        }
+
+        [Command("SbHeroList")]
+        [Description("Get a list for all aviable hereos")]
+        public async Task ShowHeroList(CommandContext ctx)
+        {
+            try
+            {
+                var embed = new DesignFactory().GetEmbed("All Aviable Heros", ShiningBeyondManager.Instance.TryGetHeroList());
+
+                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+
         }
 
         [Command("SbHero")]
@@ -314,6 +360,7 @@ namespace DiscordBotCSharp
         #endregion
 
         #region Games
+
         [Command("TTT")]
         [Description("Start TicTacTo (only German Language atm)")]
         private async Task StartTicTacTo(CommandContext ctx)
@@ -322,6 +369,7 @@ namespace DiscordBotCSharp
             TicTacToEntry gameStart = new TicTacToEntry(ctx.Member.Id);
             gameStart.StartGame(ctx);
 #endif
+
         }
 
         #endregion

@@ -11,7 +11,8 @@ namespace DiscordBotCSharp.Games.TicTacTo
     {
 
         public readonly string TTT_VERSION = $"TicTacTo Version 1.0";//technologie erlaubt keine Konstanten
-        public readonly string GAME_REGISTRY = $" du hast für das Spiel TicTacTo angemeldet.\nSchreibe die Reihe und Zeile wie Folgt: 1,1 für die obere linke Ecke, 3,3 für die untere Rechte Ecke,3,1 für die untere Linke Ecke,\n\nDu Hast das X, die Ki das O.\n\nDas Spiel beginnt in Kürze...";//1
+         public readonly string GAME_REGISTRY = $"You asign for the game TicTacTo.\nWrite your Char in row and column formatter.\nYou see on bottom the formatter.\nIf its your turn you have to write something like 3,1.\nYou start with \"X\".\nHAVE FUN, game starts soon...";//1
+
         public readonly string GAME_START = $"Game start, you begin";//2
         public readonly string ERROR_PLACE_FIELD = $"This Field is set, you cant set it by yourself";
         public readonly string WINNER_TEXT = $"You won!";
