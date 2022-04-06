@@ -15,10 +15,10 @@ namespace DiscordBotCSharp.MessageDesigns
         public const string WOLFI_BOT_PICUTRE = "https://i.imgur.com/3h5CSAf.png";
         public const string EMBED_FOOTER = "Made by Wolfi";
         public const string WOLFI_IMAGE = "https://cdn.discordapp.com/avatars/323381699675422724/be60edbf146f24c975d708e05d2030b1.png?size=1024";
-        public const string BOT_CREATED_TIME = "03.12.2020 19:22:59";
+        public const string BOT_CREATED_TIME = "06.04.2020 18:33:00";
         public const string BOT_UPDATE_TIME = "24.01.2022 15:00:00";
-        public const string COMMANDS = ";myuserinfo\n;info\n;ttt\n;getgit\n;sbinfo";
-        public const string PATCH_NOTES = "->DataBase changes\n ->New commands: ;SbAdd | ;SbRemove | ;Sbaddtest | ;Howtoadd";
+        public const string COMMANDS = ";myuserinfo\n;info\n;ttt\n;getgit\n;sbinfo\n;SbHeroList";
+        public const string PATCH_NOTES = "->DataBase changes\n ->New commands: ;SbHeroList\nAnnouncements are now aviable";
         public const string PROJECT_LINK = "https://github.com/Wolfi1802/DiscordBotManager";
         public const string WOLFIS_NAME = "Wolfi";
 
@@ -33,6 +33,8 @@ namespace DiscordBotCSharp.MessageDesigns
         public const string UPDATE_NOTES = "Update Notes";
         public const string BOT_INFO = "Informations from Bot";
         public const string BOT_DESC = "This Bot is a free open Source Project,type ;help for more informations about commands";
+        public const string BOT_SERVICE = "Services";
+        public const string BOT_SERVICELIST = "Create \"Annnouncement\" Channel to get every Announcement from Bot";
         public const string PROJECT_NAME = "Project Link: ";
 
         #region SECRET WOLFI TEXT
@@ -43,6 +45,9 @@ namespace DiscordBotCSharp.MessageDesigns
         public const string SUCCESSFUL = "Successful";
         public const string DELETED = "deleted";
         public const string MESSAGE = "Messages";
+        public const string BOT_ONLINE_ANNOUNCEMENT = "Bot Is Online";
+        public const string ANNOUNCEMENTS = "Announcements";
+        public const string ERROR_ANNOUNCEMENT = "Fehler beim senden der Announcement";
 
         #endregion
 

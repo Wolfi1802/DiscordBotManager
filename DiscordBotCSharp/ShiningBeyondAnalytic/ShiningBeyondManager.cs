@@ -64,9 +64,28 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
 
         #endregion
 
+        public string TryGetHeroList()
+        {
+            string list = string.Empty;
+
+            try
+            {
+                foreach (var item in this.listOfHeros)
+                {
+                    if (!list.Contains(item.Name))
+                        list += $"{item.Name} \n";
+                }
+            }
+            catch (Exception ex)
+            {
+                return TextFragments.SB_DB_SHOW_E;
+            }
+
+            return list;
+        }
+
         public async void TryShowHeroData(CommandContext ctx, string[] msg)
         {
-
             if (ctx == null)
                 throw new NullReferenceException($"{nameof(ShiningBeyondManager)}, {nameof(TryShowHeroData)}");
             if (msg == null)
@@ -130,7 +149,7 @@ namespace DiscordBotCSharp.ShiningBeyondAnalytic
                 //TODO brechne states anhand des lvls 2-200!!!
             }
 
-                return model;
+            return model;
         }
 
 

@@ -1,4 +1,5 @@
 ﻿
+using DiscordBotCSharp.MessageDesigns;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -7,6 +8,7 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -16,9 +18,11 @@ namespace DiscordBotCSharp
 {
     public class Bot
     {
+
         public DiscordClient Client { get; private set; }
         public InteractivityExtension interactivity { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
+        public static List<DiscordChannel> ChannelsForAnnouncements =new List<DiscordChannel>();
 
         public async Task RunAsync()
         {
@@ -38,16 +42,17 @@ namespace DiscordBotCSharp
             {
                 Token = configJson.Token,
                 TokenType = TokenType.Bot,
-                AutoReconnect = true,              
+                AutoReconnect = true,
             };
 
             this.Client = new DiscordClient(config);
 
             this.Client.Ready += OnClientReady;
+            this.Client.GuildDownloadCompleted += OnBotGuildsIsLoaded;
 
             this.Client.UseInteractivity(new InteractivityConfiguration
             {
-                Timeout = TimeSpan.FromMinutes(0.25),           
+                Timeout = TimeSpan.FromMinutes(0.25),
             });
 
             var commandsConfig = new CommandsNextConfiguration
@@ -66,6 +71,25 @@ namespace DiscordBotCSharp
             await this.Client.ConnectAsync();
 
             await Task.Delay(-1);
+        }
+
+        private Task OnBotGuildsIsLoaded(DiscordClient sender, GuildDownloadCompletedEventArgs e)
+        {
+            foreach (var guilds in sender.Guilds.Values)
+            {
+                foreach (var channel in guilds.Channels.Values)
+                {
+                    if (channel.Name.ToLower().Contains(TextFragments.ANNOUNCEMENTS.ToLower()))
+                    {
+                        var embed = new DesignFactory().GetEmbed(TextFragments.ANNOUNCEMENTS, TextFragments.BOT_ONLINE_ANNOUNCEMENT, setAuthor:false);
+                        channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                        ChannelsForAnnouncements.Add(channel);
+                        break;
+                    }
+                }
+            }
+
+            return Task.CompletedTask;
         }
 
         private Task OnClientReady(object t, ReadyEventArgs e)
